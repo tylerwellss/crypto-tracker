@@ -1,0 +1,26 @@
+.Landing {
+  margin-top: 74px !important;
+  width: 75%;
+  margin: auto;
+  text-align: center;
+}
+
+.RedText {
+  color: red;
+  border-bottom: 1px solid rgba(224, 224, 224, 1);
+}
+
+.GreenText {
+  color: green;
+  border-bottom: 1px solid rgba(224, 224, 224, 1);
+}
+
+.CurrencyName {
+  font-weight: bold !important;
+}
+
+.CurrencyShort {
+  font-weight: normal;
+  color: gray;
+  font-size: .4em;
+}

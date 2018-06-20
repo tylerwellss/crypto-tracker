@@ -1,0 +1,19 @@
+.AppBar {
+  display: flex;
+  flex-direction: row;
+}
+
+.Spacer {
+  flex: 1;
+}
+
+.AppBar a {
+  margin-right: 20px;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.AppBar a:hover {
+  text-decoration: underline;
+}

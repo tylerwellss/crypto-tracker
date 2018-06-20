@@ -1,0 +1,11 @@
+export const LANDING = '/';
+export const ACCOUNT = '/account';
+export const PORTFOLIO = '/portfolio';
+export const MOVERS = '/movers';
+export const ATH_TRACKER = '/ath-tracker'
+export const NEWS = '/news';
+export const SIGN_IN = '/sign-in';
+export const SIGN_OUT = '/sign-out';
+export const REGISTER = '/register';
+export const FORGOT_PASSWORD = '/forgot-password';
+export const CHANGE_PASSWORD = '/change-password';
