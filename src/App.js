@@ -9,6 +9,7 @@ import * as routes from './constants/routes'
 import { connect } from 'react-redux';
 import * as actions from './store/actions/index';
 import Portfolio from './containers/Portfolio/Portfolio';
+import Cryptocurrency from './containers/Cryptocurrency/Cryptocurrency';
 
 class App extends Component {
 
@@ -36,6 +37,9 @@ class App extends Component {
           />
           <Route exact path={routes.PORTFOLIO}
             component={() => <Portfolio />} 
+          />
+          <Route path={routes.CRYPTOCURRENCY}
+            component={Cryptocurrency}
           />
         </div>
       </Router>

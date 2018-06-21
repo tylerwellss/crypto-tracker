@@ -1,0 +1,18 @@
+.CoinBrief {
+  width: 100%;
+}
+
+.CoinBrief p {
+  margin: 0;
+}
+
+.CoinImageContainer {
+  max-width: 75px;
+  margin-right: 10px;
+  margin-left: 10px;
+  box-sizing: border-box;
+}
+
+.CoinImage {
+  border-radius: 50px;
+}

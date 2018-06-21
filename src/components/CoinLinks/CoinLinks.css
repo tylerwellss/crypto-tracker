@@ -1,0 +1,23 @@
+.CoinLink a {
+  line-height: 23.5px;
+  color: #0074D9;
+  text-decoration: none;
+  font-weight: bold;
+  padding-left: 8px;
+}
+
+.CoinLink {
+  text-align: left !important;
+}
+
+.CoinLinksContainer {
+  margin-left: 18px;
+}
+
+ul {
+  padding-left: 0;
+}
+
+.Gray {
+  color: blue !important;
+}

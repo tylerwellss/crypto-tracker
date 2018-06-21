@@ -23,7 +23,6 @@ export const authFail = (error) => {
 }
 
 export const signOut = () => {
-  console.log('SIGN OUT')
   localStorage.removeItem('token');
   localStorage.removeItem('userEmail');
   localStorage.removeItem('userId');

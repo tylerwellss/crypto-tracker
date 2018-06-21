@@ -23,4 +23,14 @@
   font-weight: normal;
   color: gray;
   font-size: .4em;
+  margin-right: 4px;
+}
+
+.Link {
+  text-decoration: none;
+  color: #0074D9
+}
+
+.Button {
+  background-color: #0074D9;
 }

@@ -9,3 +9,4 @@ export const SIGN_OUT = '/sign-out';
 export const REGISTER = '/register';
 export const FORGOT_PASSWORD = '/forgot-password';
 export const CHANGE_PASSWORD = '/change-password';
+export const CRYPTOCURRENCY = '/cryptocurrency/:id'

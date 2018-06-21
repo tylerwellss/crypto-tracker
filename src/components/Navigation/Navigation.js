@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../store/actions/index';
 import Icon from '@material-ui/core/Icon';
 
+
 const navigation = (props) => {
   let authLinks = (
     <Toolbar>
@@ -21,7 +22,7 @@ const navigation = (props) => {
 
   let unAuthLinks = (
     <Toolbar>
-    <Link to="/">Home</Link>
+    <Link to="/"><Icon>home</Icon></Link>
     <div className="Spacer"></div>
     <Link to="/sign-in">Sign In</Link>
     <Link to="/register">Register</Link>

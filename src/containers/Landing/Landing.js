@@ -11,6 +11,8 @@ import TextField from '@material-ui/core/TextField';
 import * as data from './MockData.json'
 import './Landing.css'
 import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
+import Spinner from '../../components/Shared/Spinner/Spinner';
 
 const getSorting = (order, orderBy) => {
   return order === 'desc'
@@ -85,9 +87,9 @@ class Landing extends React.Component {
   }
 
   componentDidMount() {
-    for (let i = 0; i < data.length; i++) {
-      data[i].rank = i + 1;
-    }
+  for (let i = 0; i < data.length; i++) {
+    data[i].rank = i + 1;
+  }
     this.setState({data: data})
   }
 
@@ -130,21 +132,61 @@ class Landing extends React.Component {
     }
     const { data, order, orderBy, rowsPerPage, page } = this.state;
 
+    let table = undefined;
+    let spinner = <Spinner />;
+
+    if (this.state.data.length < 1) {
+      spinner = <Spinner />;
+      table = null;
+    } else {
+      spinner = null;
+      table = (
+        data
+          .sort(getSorting(order, orderBy))
+          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+          .map((n, index) => {
+            let textColor = undefined
+            if (n.cap24hrChange < 0) {
+              textColor = 'red'
+            } else {
+              textColor = 'green'
+            }
+            return (
+              <TableRow
+                hover
+                tabIndex={-1}
+                key={index}
+              >
+                <TableCell style={{'padding':'0 0 0 0', 'textAlign':'left'}} numeric>
+                  {n.rank}
+                </TableCell>
+                <TableCell numeric className="CurrencyName"><span className="CurrencyShort">{n.short}</span><Link className="Link" to={'/cryptocurrency/' + n.short.toLowerCase()}>{n.long}</Link></TableCell>
+                <TableCell numeric>${numberWithCommas(n.price)}</TableCell>
+                <TableCell numeric>${numberWithCommas(n.mktcap)}</TableCell>
+                <TableCell numeric>${numberWithCommas(n.volume, 'volume')}</TableCell>
+                <TableCell style={{'color':textColor}} numeric>{n.cap24hrChange}%</TableCell>
+              </TableRow>
+            );
+          })
+      )
+    }
+
     return (
       <div className="Landing">
-        <h5>Total Market Cap: $284,774,407,307</h5>
         <TextField 
-        className="SearchInput"
-        id="search"
-        label="Search"
-        value={this.state.searchQuery}
-        helperText="Search for a specific currency"
-        placeholder="XMR"
-        onChange={this.handleSearchInput}
+          className="SearchInput"
+          id="search"
+          label="Search"
+          value={this.state.searchQuery}
+          helperText="Search for a specific currency"
+          placeholder="XMR"
+          onChange={this.handleSearchInput}
         />
         <Button onClick={this.handleSearchSubmit} variant="contained" color="primary" style={{'marginLeft':'20px'}}>
           Search
-        </Button>        <div >
+        </Button>    
+        <h5>Total Market Cap: $284,774,407,307</h5>    
+        <div >
           <Table aria-labelledby="tableTitle">
             <LandingHead
               order={order}
@@ -153,34 +195,7 @@ class Landing extends React.Component {
               rowCount={data.length}
             />
             <TableBody>
-              {data
-                .sort(getSorting(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((n, index) => {
-                  let textColor = undefined
-                  if (n.cap24hrChange < 0) {
-                    textColor = 'red'
-                  } else {
-                    textColor = 'green'
-                  }
-                  return (
-                    <TableRow
-                      hover
-                      tabIndex={-1}
-                      key={index}
-                    >
-                      <TableCell style={{'padding':'0 0 0 0', 'textAlign':'left'}} numeric>
-                        {n.rank}
-                      </TableCell>
-                      <TableCell numeric className="CurrencyName"> <span className="CurrencyShort">{n.short}</span> {n.long}</TableCell>
-                      <TableCell numeric>${numberWithCommas(n.price)}</TableCell>
-                      <TableCell numeric>${numberWithCommas(n.mktcap)}</TableCell>
-                      <TableCell numeric>${numberWithCommas(n.volume, 'volume')}</TableCell>
-                      <TableCell style={{'color':textColor}} numeric>{n.cap24hrChange}%</TableCell>
-                    </TableRow>
-                  );
-                })}
-
+              {table}
             </TableBody>
           </Table>
         </div>
@@ -198,6 +213,7 @@ class Landing extends React.Component {
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
+        {spinner}
         <p>API: https://github.com/CoinCapDev/CoinCap.io</p>
       </div>
     );
