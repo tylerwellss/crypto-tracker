@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './Cryptocurrency.css';
-import * as data from './MockData.json';
+// import * as data from './MockData.json';
 import Spinner from '../../components/Shared/Spinner/Spinner';
 import CoinBrief from '../../components/CoinBrief/CoinBrief';
 import CoinLinks from '../../components/CoinLinks/CoinLinks';
@@ -14,14 +14,13 @@ class Cryptocurrency extends Component {
   };
 
   componentDidMount() {
-    setTimeout(() => {
-      this.setState({coinName: this.props.match.params.id, coinData: data});
-    }, 1000)
-    // axios.get('http://coincap.io/page/' + this.props.match.params.id.toUpperCase())
-    //   .then(response => {
-    //     this.setState({coinData: response.data})
-    //     console.log(response);
-    //   })
+    // setTimeout(() => {
+    //   this.setState({coinName: this.props.match.params.id, coinData: data});
+    // }, 1000)
+    axios.get('http://coincap.io/page/' + this.props.match.params.id.toUpperCase())
+      .then(response => {
+        this.setState({coinData: response.data, coinName: this.props.match.params.id})
+      })
   };
 
   render() {

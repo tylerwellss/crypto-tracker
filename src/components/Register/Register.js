@@ -15,14 +15,9 @@ class Register extends Component {
     // disabled: true
   };
 
-  componentDidMount() {
-    console.log(this.props);
-  }
-
   handleSubmit = (event) => {
     event.preventDefault();
     this.props.onAuth(this.state.email, this.state.password, 'register');
-    console.log(this.props)
   }
 
   handleInput = (event, field) => {

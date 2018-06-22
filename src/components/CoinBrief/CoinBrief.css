@@ -16,3 +16,15 @@
 .CoinImage {
   border-radius: 50px;
 }
+
+.PositiveCoinChange {
+  font-size: 16px;
+  font-weight: bold;
+  color: green;
+}
+
+.NegativeCoinChange {
+  font-size: 16px;
+  font-weight: bold;
+  color: red;
+}

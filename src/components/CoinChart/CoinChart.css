@@ -2,3 +2,17 @@ canvas{
   box-sizing: border-box;
   margin-right: 20px;
 }
+
+.Button {
+  margin-left: 5px !important;
+  font-weight: bold !important;
+  text-transform: lowercase !important;
+}
+
+.Button:active {
+  background-color: gray !important;
+}
+
+.MarginLeft {
+  margin-left: 20px !important;
+}

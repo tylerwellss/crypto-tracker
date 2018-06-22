@@ -13,6 +13,7 @@ import './Landing.css'
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import Spinner from '../../components/Shared/Spinner/Spinner';
+import axios from 'axios';
 
 const getSorting = (order, orderBy) => {
   return order === 'desc'
@@ -59,7 +60,7 @@ class LandingHead extends React.Component {
                     direction={order}
                     onClick={this.createSortHandler(column.id)}
                   >
-                    {column.label}
+                    <strong>{column.label}</strong>
                   </TableSortLabel>
                 </Tooltip>
               </TableCell>
@@ -78,19 +79,27 @@ class Landing extends React.Component {
     this.state = {
       order: 'desc',
       orderBy: 'mktcap',
-      data: data,
+      data: [],
       page: 0,
       rowsPerPage: 100,
       searchQuery: '',
+      globalData: null,
     };
     this.handleSearchInput = this.handleSearchInput.bind(this);
   }
 
   componentDidMount() {
-  for (let i = 0; i < data.length; i++) {
-    data[i].rank = i + 1;
-  }
-    this.setState({data: data})
+    axios.get('http://coincap.io/front')
+      .then(response => {
+        for (let i = 0; i < response.data.length; i++) {
+          response.data[i].rank = i + 1;
+        }
+        this.setState({data: response.data})
+      })
+    axios.get('http://coincap.io/global')
+      .then(response => {
+        this.setState({globalData: response.data});
+      })
   }
 
   handleRequestSort = (event, property) => {
@@ -126,7 +135,7 @@ class Landing extends React.Component {
   render() {
       // To add commas to big numbers
     const numberWithCommas = (x, type) => {
-      return type === 'volume'
+      return type === 'noDecimals'
       ?  x.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
       : x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     }
@@ -137,7 +146,16 @@ class Landing extends React.Component {
 
     if (this.state.data.length < 1) {
       spinner = <Spinner />;
-      table = null;
+      table = (
+        <TableRow>
+          <TableCell></TableCell>
+          <TableCell></TableCell>
+          <TableCell></TableCell>
+          <TableCell></TableCell>
+          <TableCell></TableCell>
+          <TableCell></TableCell>
+        </TableRow>
+      )
     } else {
       spinner = null;
       table = (
@@ -162,8 +180,8 @@ class Landing extends React.Component {
                 </TableCell>
                 <TableCell numeric className="CurrencyName"><span className="CurrencyShort">{n.short}</span><Link className="Link" to={'/cryptocurrency/' + n.short.toLowerCase()}>{n.long}</Link></TableCell>
                 <TableCell numeric>${numberWithCommas(n.price)}</TableCell>
-                <TableCell numeric>${numberWithCommas(n.mktcap)}</TableCell>
-                <TableCell numeric>${numberWithCommas(n.volume, 'volume')}</TableCell>
+                <TableCell numeric>${numberWithCommas(n.mktcap, 'noDecimals')}</TableCell>
+                <TableCell numeric>${numberWithCommas(n.volume, 'noDecimals')}</TableCell>
                 <TableCell style={{'color':textColor}} numeric>{n.cap24hrChange}%</TableCell>
               </TableRow>
             );
@@ -185,7 +203,7 @@ class Landing extends React.Component {
         <Button onClick={this.handleSearchSubmit} variant="contained" color="primary" style={{'marginLeft':'20px'}}>
           Search
         </Button>    
-        <h5>Total Market Cap: $284,774,407,307</h5>    
+        <h5>Total Market Cap: {this.state.globalData ? '$' + numberWithCommas(this.state.globalData.totalCap, 'noDecimals') : 'Loading'}</h5>    
         <div >
           <Table aria-labelledby="tableTitle">
             <LandingHead
@@ -214,7 +232,7 @@ class Landing extends React.Component {
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
         {spinner}
-        <p>API: https://github.com/CoinCapDev/CoinCap.io</p>
+        <p>Data provided by <a href="http://coincap.io">CoinCap.io</a></p>
       </div>
     );
   }
