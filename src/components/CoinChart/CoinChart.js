@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import './CoinChart.css';
 import axios from 'axios';
-// import * as MockData from './Mock24HourData.json'
 import Spinner from '../Shared/Spinner/Spinner';
 import Button from '@material-ui/core/Button';
 
@@ -10,62 +9,55 @@ var Linechart = require("react-chartjs").Line;
 
 class LineChart extends Component {
   state = {
-    timeFrame: '1 Day',
-    graphData: undefined,
-    loading: true
+    timeFrame: undefined,
+    graphData: [],
+    loading: true,
+    limiter: 88,
+    dateSlice: 0
   };
 
   componentDidMount() {
-    console.log(this.props.coinData.id)
-    this.updateChartData('1day')
+    console.log('[componentDidMount]: CoinChart.js')
+    this.updateChartData('1day', 13, 1);
   }
 
-  updateChartData = (timespan, limiter) => {
+  updateChartData = (timespan, limiter, dateSlice) => {
     this.setState({loading: true})
-    let graphLabels = [];
-    let graphData = [];
-    axios.get('http://coincap.io/history/' + timespan + '/' + this.props.coinData.id) // timespan: 1d, 7d, 30d, 90d, 185d, 365d
+    axios.get('http://coincap.io/history/' + timespan + '/' + this.props.coinData.id) // timespan: 1d, 7d, 30d, 90d, 180d, 365d
       .then(response => {
-        this.setState({graphData: response.data.price});
-        this.setState({loading:false})
-        for (let i = 0; i < this.state.graphData.length; i++) {
-          console.log(this.state.graphData[i][0])
-          if (this.state.graphData[i][0] % 50000000 === 0) {
-            graphLabels.push(new Date(this.state.graphData[i][0]).toLocaleString('en-US').split(',')[1])
-            graphData.push(this.state.graphData[i][1])
-          }
-        }
-      })
+        this.setState({graphData: response.data.price, loading:false, limiter: limiter, dateSlice: dateSlice})
+        })
       .catch(err => {
         this.setState({loading: false})
         throw err;
       })
   }
 
-  handleTimeChange = (timeframe) => {
-    switch (timeframe) {
+  handleTimeChange = (timespan) => {
+    switch (timespan) {
       case '1d':
         this.setState({timeFrame: '1 Day'})
-        this.updateChartData('1day', 88)
+        this.updateChartData('1day', 13, 1)
         return;
       case '7d':
         this.setState({timeFrame: '7 Days'})
-        this.updateChartData('7day', 8888)
+        this.updateChartData('7day', 100, 0)
         return;
       case '30d':
         this.setState({timeFrame: '30 Days'})
-        this.updateChartData('30day', 99999)
+        this.updateChartData('30day', 45, 0)
         return;
       case '90d':
         this.setState({timeFrame: '90 Days'})
+        this.updateChartData('90day', 80, 0);
         return;
-      case '185d':
-        console.log('185d selected');
-        this.setState({timeFrame: '185 Days'})
+      case '180d':
+        this.setState({timeFrame: '180 Days'})
+        this.updateChartData('180day', 60, 0)
         return;
       case '365d':
-        console.log('365d selected');
         this.setState({timeFrame: '365 Days'})
+        this.updateChartData('365day', 20, 0)
         return;
       default: 
         return;
@@ -73,20 +65,33 @@ class LineChart extends Component {
   }
 
   render() {
+    const numberWithCommas = (x, type) => {
+      return type === 'noDecimals'
+      ?  x.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+      : x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
+
     let graphLabels = [];
     let graphData = [];
     // Productiuon:
     if (this.state.graphData) {
+      console.log('[RENDER]: Filter data')
+      console.log('Orig Length: ' + this.state.graphData.length)
+      console.log('Limiter: ' + this.state.limiter)
+      console.log('DateSlice:' + this.state.dateSlice)
       for (let i = 0; i < this.state.graphData.length; i++) {
-        if (this.state.graphData[i][0] % 88 === 0) {
-          graphLabels.push(new Date(this.state.graphData[i][0]).toLocaleString().split(',')[0])
-          graphData.push(this.state.graphData[i][1])
+        if (i % this.state.limiter === 0) {
+          graphLabels.push(new Date(this.state.graphData[i][0]).toLocaleString().split(',')[this.state.dateSlice])
+          graphData.push(numberWithCommas(this.state.graphData[i][1]))
         }
       }
     }
     
     const chartOptions = {
       response: true,
+      bezierCurve : false,
+      pointDot : true,
+      pointDotStrokeWidth : 4,
       maintainAspectRatio: true,
       scaleShowGridLines : false,
       scales: {
@@ -128,7 +133,7 @@ class LineChart extends Component {
           <Button onClick={() => this.handleTimeChange('7d')} variant="outlined" size="small" className="Button">7d</Button>
           <Button onClick={() => this.handleTimeChange('30d')} variant="outlined" size="small" className="Button">30d</Button>
           <Button onClick={() => this.handleTimeChange('90d')} variant="outlined" size="small" className="Button">90d</Button>
-          <Button onClick={() => this.handleTimeChange('185d')} variant="outlined" size="small" className="Button">185d</Button>
+          <Button onClick={() => this.handleTimeChange('180d')} variant="outlined" size="small" className="Button">180d</Button>
           <Button onClick={() => this.handleTimeChange('365d')} variant="outlined" size="small" className="Button">365d</Button>
         </div>
         <div>
