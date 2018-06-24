@@ -84,6 +84,7 @@ class Landing extends React.Component {
       rowsPerPage: 100,
       searchQuery: '',
       globalData: null,
+      origData: [],
     };
     this.handleSearchInput = this.handleSearchInput.bind(this);
   }
@@ -94,7 +95,7 @@ class Landing extends React.Component {
         for (let i = 0; i < response.data.length; i++) {
           response.data[i].rank = i + 1;
         }
-        this.setState({data: response.data})
+        this.setState({data: response.data, origData: response.data})
       })
     axios.get('http://coincap.io/global')
       .then(response => {
@@ -123,7 +124,7 @@ class Landing extends React.Component {
 
   handleSearchInput = (event) => {
     if (event.target.value === '' || event.target.value === undefined || event.target.value === null) {
-      this.setState({data: data, searchQuery: event.target.value})
+      this.setState({data: this.state.origData, searchQuery: event.target.value})
     } else {
       let filteredData = data.filter(el => {
         return el.long.toLowerCase() === event.target.value.toLowerCase() || el.short.toLowerCase() === event.target.value.toLowerCase() ? el : null;
