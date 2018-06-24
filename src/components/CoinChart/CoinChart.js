@@ -82,7 +82,7 @@ class LineChart extends Component {
       for (let i = 0; i < this.state.graphData.length; i++) {
         if (i % this.state.limiter === 0) {
           graphLabels.push(new Date(this.state.graphData[i][0]).toLocaleString().split(',')[this.state.dateSlice])
-          graphData.push(numberWithCommas(this.state.graphData[i][1]))
+          graphData.push(this.state.graphData[i][1])
         }
       }
     }
