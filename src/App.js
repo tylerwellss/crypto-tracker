@@ -2,14 +2,13 @@ import React, { Component } from 'react';
 import './App.css';
 import Navigation from './components/Navigation/Navigation';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import Register from './components/Register/Register';
-import SignInPage from './components/SignIn/SignIn';
 import Landing from './containers/Landing/Landing';
 import * as routes from './constants/routes'
 import { connect } from 'react-redux';
 import * as actions from './store/actions/index';
 import Portfolio from './containers/Portfolio/Portfolio';
 import Cryptocurrency from './containers/Cryptocurrency/Cryptocurrency';
+import Auth from './containers/UserAuth/UserAuth'
 
 class App extends Component {
 
@@ -29,11 +28,8 @@ class App extends Component {
           <Route path='/' exact
             component={() => <Landing />} 
           />
-          <Route exact path={routes.REGISTER}
-            component={() => <Register />} 
-          />
           <Route exact path={routes.SIGN_IN}
-            component={() => <SignInPage />} 
+            component={() => <Auth />} 
           />
           <Route exact path={routes.PORTFOLIO}
             component={() => <Portfolio />} 

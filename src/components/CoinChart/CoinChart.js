@@ -6,10 +6,9 @@ import Button from '@material-ui/core/Button';
 
 var Linechart = require("react-chartjs").Line;
 
-
 class LineChart extends Component {
   state = {
-    timeFrame: undefined,
+    timeFrame: '1 Day',
     graphData: [],
     loading: true,
     limiter: 88,
