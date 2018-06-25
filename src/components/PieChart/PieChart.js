@@ -1,15 +1,18 @@
 import React from 'react';
+import './PieChart.css'
+
 var PieChart = require("react-chartjs").Pie;
 
 
-const pieChart = () => {
+const pieChart = (props) => {
   const chartOptions = {
-    
+    responsive: true,
   }
+
   return (
+
     <div>
-    <p>I'm a chart</p>
-    {/* <PieChart data={chartData} options={chartOptions}/> */}
+      <PieChart data={props.data} chartOptions={chartOptions} width="900" height="350"/>
     </div>
   );
 }

@@ -64,12 +64,6 @@ class LineChart extends Component {
   }
 
   render() {
-    const numberWithCommas = (x, type) => {
-      return type === 'noDecimals'
-      ?  x.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      : x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    }
-
     let graphLabels = [];
     let graphData = [];
     // Productiuon:

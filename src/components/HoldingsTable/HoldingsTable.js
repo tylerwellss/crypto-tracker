@@ -7,13 +7,11 @@ import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Tooltip from '@material-ui/core/Tooltip';
-import TextField from '@material-ui/core/TextField';
-import * as data from './MockData.json'
-import './Landing.css'
-import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
+import './HoldingsTable.css'
+// import { Link } from 'react-router-dom';
 import Spinner from '../../components/Shared/Spinner/Spinner';
 import axios from 'axios';
+import Icon from '@material-ui/core/Icon';
 
 const getSorting = (order, orderBy) => {
   return order === 'desc'
@@ -22,15 +20,12 @@ const getSorting = (order, orderBy) => {
 }
 
 const columnData = [
-  { id: 'rank', numeric: true, disablePadding: false, label: 'Rank', style: {'padding':'0', 'margin':'0', 'textAlign':'left', 'flexDirection':'row'}},
-  { id: 'long', numeric: true, disablePadding: false, label: 'Name' },
-  { id: 'price', numeric: true, disablePadding: false, label: 'Price' },
-  { id: 'mktcap', numeric: true, disablePadding: false, label: 'Market Cap' },
-  { id: 'volume', numeric: true, disablePadding: false, label: '24 Volume' },
-  { id: 'cap24hrChange', numeric: true, disablePadding: false, label: '24h Change' },
+  { id: 'coin', numeric: false, disablePadding: false, label: 'Coin'},
+  { id: 'amount', numeric: false, disablePadding: false, label: 'Amount' },
+  { id: 'delete', numeric: false, disablePadding: false, label: 'Delete' },
 ];
 
-class LandingHead extends React.Component {
+class HoldingsTableHead extends React.Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
@@ -72,36 +67,37 @@ class LandingHead extends React.Component {
   }
 }
 
-class Landing extends React.Component {
+class HoldingsTable extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       order: 'desc',
-      orderBy: 'mktcap',
-      data: [],
+      orderBy: 'amount',
+      holdings: [],
       page: 0,
       rowsPerPage: 100,
-      searchQuery: '',
-      globalData: null,
-      origData: [],
+      loading: false,
     };
-    this.handleSearchInput = this.handleSearchInput.bind(this);
   }
 
   componentDidMount() {
-    axios.get('http://coincap.io/front')
+    this.setState({loading: true})
+    // TODO: Move this to redux
+    axios.get('https://track-my-crypto.firebaseio.com/portfolios/' + localStorage.getItem('userId') + '/holdings.json')
       .then(response => {
-        for (let i = 0; i < response.data.length; i++) {
-          response.data[i].rank = i + 1;
-        }
-        this.setState({data: response.data, origData: response.data})
+        let fetchedHoldings = [];
+        for (let key in response.data) {
+          fetchedHoldings.push({
+            ...response.data[key],
+        })};
+        this.setState({holdings: fetchedHoldings, loading: false})
       })
-    axios.get('http://coincap.io/global')
-      .then(response => {
-        this.setState({globalData: response.data});
+      .catch(error => {
+        console.log(error);
+        this.setState({loading: false})
       })
-  }
+    }
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -122,17 +118,6 @@ class Landing extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
-  handleSearchInput = (event) => {
-    if (event.target.value === '' || event.target.value === undefined || event.target.value === null) {
-      this.setState({data: this.state.origData, searchQuery: event.target.value})
-    } else {
-      let filteredData = data.filter(el => {
-        return el.long.toLowerCase() === event.target.value.toLowerCase() || el.short.toLowerCase() === event.target.value.toLowerCase() ? el : null;
-      })
-      this.setState({data: filteredData, searchQuery: event.target.value})
-    }
-  };
-
   render() {
       // To add commas to big numbers
     const numberWithCommas = (x, type) => {
@@ -145,7 +130,7 @@ class Landing extends React.Component {
     let table = undefined;
     let spinner = <Spinner />;
 
-    if (this.state.data.length < 1) {
+    if (this.state.loading) {
       spinner = <Spinner />;
       table = (
         <TableRow>
@@ -160,30 +145,19 @@ class Landing extends React.Component {
     } else {
       spinner = null;
       table = (
-        data
+        this.state.holdings
           .sort(getSorting(order, orderBy))
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((n, index) => {
-            let textColor = undefined
-            if (n.cap24hrChange < 0) {
-              textColor = 'red'
-            } else {
-              textColor = 'green'
-            }
             return (
               <TableRow
                 hover
                 tabIndex={-1}
                 key={index}
               >
-                <TableCell style={{'padding':'0 0 0 0', 'textAlign':'left'}} numeric>
-                  {n.rank}
-                </TableCell>
-                <TableCell numeric className="CurrencyName"><span className="CurrencyShort">{n.short}</span><Link className="Link" to={'/cryptocurrency/' + n.short.toLowerCase()}>{n.long}</Link></TableCell>
-                <TableCell numeric>${numberWithCommas(n.price)}</TableCell>
-                <TableCell numeric>${numberWithCommas(n.mktcap, 'noDecimals')}</TableCell>
-                <TableCell numeric>${numberWithCommas(n.volume, 'noDecimals')}</TableCell>
-                <TableCell style={{'color':textColor, 'fontWeight':'bold'}} numeric>{n.cap24hrChange}%</TableCell>
+              <TableCell>{n.coin}</TableCell>
+              <TableCell>{n.amount}</TableCell>
+              <TableCell><Icon>delete</Icon></TableCell>
               </TableRow>
             );
           })
@@ -191,27 +165,15 @@ class Landing extends React.Component {
     }
 
     return (
-      <div className="Landing">
-        <TextField 
-          className="SearchInput"
-          id="search"
-          label="Search"
-          value={this.state.searchQuery}
-          helperText="Search for a specific currency"
-          placeholder="XMR"
-          onChange={this.handleSearchInput}
-        />
-        <Button onClick={this.handleSearchSubmit} variant="contained" color="primary" style={{'marginLeft':'20px'}}>
-          Search
-        </Button>    
-        <h5>Total Market Cap: {this.state.globalData ? '$' + numberWithCommas(this.state.globalData.totalCap, 'noDecimals') : 'Loading'}</h5>    
+      <div className="HoldingsTable"> 
+        <p><strong>Your current holdings</strong></p> 
         <div >
           <Table aria-labelledby="tableTitle">
-            <LandingHead
+            <HoldingsTableHead
               order={order}
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
-              rowCount={data.length}
+              rowCount={this.state.holdings.length}
             />
             <TableBody>
               {table}
@@ -220,7 +182,7 @@ class Landing extends React.Component {
         </div>
         <TablePagination
           component="div"
-          count={data.length}
+          count={this.state.holdings.length}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
@@ -233,10 +195,9 @@ class Landing extends React.Component {
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
         {spinner}
-        <p>Data provided by <a href="http://coincap.io">CoinCap.io</a></p>
       </div>
     );
   }
 }
 
-export default Landing;
+export default HoldingsTable;

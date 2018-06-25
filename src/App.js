@@ -9,6 +9,7 @@ import * as actions from './store/actions/index';
 import Portfolio from './containers/Portfolio/Portfolio';
 import Cryptocurrency from './containers/Cryptocurrency/Cryptocurrency';
 import Auth from './containers/UserAuth/UserAuth'
+import EditPortfolio from './components/EditPortfolio/EditPortfolio';
 
 class App extends Component {
 
@@ -25,14 +26,17 @@ class App extends Component {
       <Router className="App">
         <div>
           <Navigation />
-          <Route path='/' exact
-            component={() => <Landing />} 
+          <Route  exact path={routes.LANDING}
+            component={Landing} 
           />
           <Route exact path={routes.SIGN_IN}
             component={() => <Auth />} 
           />
           <Route exact path={routes.PORTFOLIO}
             component={() => <Portfolio />} 
+          />
+          <Route exact path={routes.EDIT_PORTFOLIO}
+            component={() => <EditPortfolio />}
           />
           <Route path={routes.CRYPTOCURRENCY}
             component={Cryptocurrency}
