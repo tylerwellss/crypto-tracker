@@ -12,11 +12,11 @@ const navigation = (props) => {
   let authLinks = (
     <Toolbar>
     <Link to="/"><Icon>home</Icon></Link>
-    <Link to="/">Biggest Winners/Losers</Link>
-    <Link to="/">Distance to ATH</Link>
+    {/* <Link to="/">Biggest Winners/Losers</Link>
+    <Link to="/">Distance to ATH</Link> */}
     <div className="Spacer"></div>
     <Link to="/portfolio">My Portfolio</Link>
-    <Icon onClick={props.onSignOut}>account_circle</Icon>
+    <Icon style={{'color':'black'}}onClick={props.onSignOut}>account_circle</Icon>
     </Toolbar>
   );
 
@@ -24,8 +24,7 @@ const navigation = (props) => {
     <Toolbar>
     <Link to="/"><Icon>home</Icon></Link>
     <div className="Spacer"></div>
-    <Link to="/sign-in">Sign In</Link>
-    <Link to="/register">Register</Link>
+    <Link to="/sign-in">Sign In / Register</Link>
     </Toolbar>
   );
   

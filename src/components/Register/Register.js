@@ -43,7 +43,7 @@ class Register extends Component {
     return (
       <div style={{'textAlign':'center'}}>
         <form className="RegisterForm">
-        <p>Register Account</p>
+        <p><strong>Register a new account</strong></p>
           <TextField 
             className="TextField"
             id="email"

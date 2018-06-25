@@ -45,6 +45,7 @@ export const auth = (email, password, method) => {
     dispatch(authStart());
     axios.post(url, authData)
       .then(response => {
+        console.log(response);
         localStorage.setItem('token', response.data.idToken);
         localStorage.setItem('userEmail', response.data.email);
         localStorage.setItem('userId', response.data.localId);
