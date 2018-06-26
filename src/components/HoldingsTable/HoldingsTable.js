@@ -2,69 +2,17 @@ import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Tooltip from '@material-ui/core/Tooltip';
 import './HoldingsTable.css'
-// import { Link } from 'react-router-dom';
-import Spinner from '../../components/Shared/Spinner/Spinner';
 import axios from 'axios';
 import Icon from '@material-ui/core/Icon';
+import HoldingsTableHead from './HoldingsTableHead/HoldingsTableHead';
 
 const getSorting = (order, orderBy) => {
   return order === 'desc'
     ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
     : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
-}
-
-const columnData = [
-  { id: 'coin', numeric: false, disablePadding: false, label: 'Coin'},
-  { id: 'amount', numeric: false, disablePadding: false, label: 'Amount' },
-  { id: 'delete', numeric: false, disablePadding: false, label: 'Delete' },
-];
-
-class HoldingsTableHead extends React.Component {
-  createSortHandler = property => event => {
-    this.props.onRequestSort(event, property);
-  };
-
-  render() {
-    const { order, orderBy } = this.props;
-
-    return (
-      <TableHead>
-        <TableRow>
-          {columnData.map(column => {
-            return (
-              <TableCell
-                style={column.style}
-                key={column.id}
-                numeric={column.numeric}
-                padding={column.disablePadding ? 'none' : 'default'}
-                sortDirection={orderBy === column.id ? order : false}
-              >
-                <Tooltip
-                  title="Sort"
-                  placement={column.numeric ? 'bottom-end' : 'bottom-start'}
-                  enterDelay={300}
-                >
-                  <TableSortLabel
-                    active={orderBy === column.id}
-                    direction={order}
-                    onClick={this.createSortHandler(column.id)}
-                  >
-                    <strong>{column.label}</strong>
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-            );
-          }, this)}
-        </TableRow>
-      </TableHead>
-    );
-  }
 }
 
 class HoldingsTable extends React.Component {
@@ -83,18 +31,18 @@ class HoldingsTable extends React.Component {
 
   componentDidMount() {
     this.setState({loading: true})
-    // TODO: Move this to redux
+    // TODO: Use Redux
     axios.get('https://track-my-crypto.firebaseio.com/portfolios/' + localStorage.getItem('userId') + '/holdings.json')
       .then(response => {
         let fetchedHoldings = [];
         for (let key in response.data) {
           fetchedHoldings.push({
+            id: key,
             ...response.data[key],
         })};
         this.setState({holdings: fetchedHoldings, loading: false})
       })
       .catch(error => {
-        console.log(error);
         this.setState({loading: false})
       })
     }
@@ -118,20 +66,19 @@ class HoldingsTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value });
   };
 
+  handleDelete = (idToDelete) => {
+    this.setState({loading: true})
+    axios.delete('https://track-my-crypto.firebaseio.com/portfolios/' + localStorage.getItem('userId') + '/holdings/' + idToDelete + '.json');
+    this.setState({loading: false})
+  }
+
   render() {
       // To add commas to big numbers
-    const numberWithCommas = (x, type) => {
-      return type === 'noDecimals'
-      ?  x.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      : x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    }
-    const { data, order, orderBy, rowsPerPage, page } = this.state;
+    const { order, orderBy, rowsPerPage, page } = this.state;
 
     let table = undefined;
-    let spinner = <Spinner />;
 
     if (this.state.loading) {
-      spinner = <Spinner />;
       table = (
         <TableRow>
           <TableCell></TableCell>
@@ -143,7 +90,6 @@ class HoldingsTable extends React.Component {
         </TableRow>
       )
     } else {
-      spinner = null;
       table = (
         this.state.holdings
           .sort(getSorting(order, orderBy))
@@ -157,7 +103,7 @@ class HoldingsTable extends React.Component {
               >
               <TableCell>{n.coin}</TableCell>
               <TableCell>{n.amount}</TableCell>
-              <TableCell><Icon>delete</Icon></TableCell>
+              <TableCell onClick={(id) => this.handleDelete(n.id)}><Icon>delete</Icon></TableCell>
               </TableRow>
             );
           })
@@ -194,7 +140,6 @@ class HoldingsTable extends React.Component {
           onChangePage={this.handleChangePage}
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
-        {spinner}
       </div>
     );
   }

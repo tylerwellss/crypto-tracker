@@ -16,7 +16,6 @@ class LineChart extends Component {
   };
 
   componentDidMount() {
-    console.log('[componentDidMount]: CoinChart.js')
     this.updateChartData('1day', 13, 1);
   }
 
@@ -68,10 +67,6 @@ class LineChart extends Component {
     let graphData = [];
     // Productiuon:
     if (this.state.graphData) {
-      console.log('[RENDER]: Filter data')
-      console.log('Orig Length: ' + this.state.graphData.length)
-      console.log('Limiter: ' + this.state.limiter)
-      console.log('DateSlice:' + this.state.dateSlice)
       for (let i = 0; i < this.state.graphData.length; i++) {
         if (i % this.state.limiter === 0) {
           graphLabels.push(new Date(this.state.graphData[i][0]).toLocaleString().split(',')[this.state.dateSlice])

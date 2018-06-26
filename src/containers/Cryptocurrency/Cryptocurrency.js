@@ -14,12 +14,13 @@ class Cryptocurrency extends Component {
   };
 
   componentDidMount() {
-    // setTimeout(() => {
-    //   this.setState({coinName: this.props.match.params.id, coinData: data});
-    // }, 1000)
     axios.get('http://coincap.io/page/' + this.props.match.params.id.toUpperCase())
       .then(response => {
         this.setState({coinData: response.data, coinName: this.props.match.params.id})
+        console.log(this.state.coinData)
+      })
+      .catch(error => {
+        console.error(error);
       })
   };
 
@@ -55,6 +56,7 @@ class Cryptocurrency extends Component {
     return (
       <div className="Cryptocurrency">
         {cryptocurrency}
+        <p style={{'textAlign':'center'}}>Data provided by <a href="http://coincap.io">CoinCap.io</a></p>
       </div>
     );
   };

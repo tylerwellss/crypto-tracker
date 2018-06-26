@@ -6,13 +6,13 @@ var PieChart = require("react-chartjs").Pie;
 
 const pieChart = (props) => {
   const chartOptions = {
-    responsive: true,
+    responsive: false,
   }
 
   return (
 
-    <div>
-      <PieChart data={props.data} chartOptions={chartOptions} width="900" height="350"/>
+    <div className="PieChart">
+      <PieChart data={props.data} options={chartOptions} width="600" height="350"/>
     </div>
   );
 }
