@@ -83,10 +83,8 @@ class PortfolioTable extends React.Component {
 
   componentDidMount() {
     setTimeout(() => {
-      console.log('table mounted w/ this data:');
-      console.log(this.props.data);
       this.setState({holdings: this.props.data, loading: false});
-    }, 1000)
+    }, 1500)
   }
 
   handleRequestSort = (event, property) => {
