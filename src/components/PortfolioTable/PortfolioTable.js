@@ -2,12 +2,11 @@ import React from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
-import Tooltip from '@material-ui/core/Tooltip';
 import { Link } from 'react-router-dom';
+import Spinner from '../Shared/Spinner/Spinner';
 import './PortfolioTable.css'
+import PortfolioTableHead from './PortfolioTableHead/PortfolioTableHead';
 
 const getSorting = (order, orderBy) => {
   return order === 'desc'
@@ -25,48 +24,6 @@ const columnData = [
   { id: 'cap24hrChange', numeric: false, disablePadding: false, label: '24h Change' },
 ];
 
-class PortfolioTableHead extends React.Component {
-  createSortHandler = property => event => {
-    this.props.onRequestSort(event, property);
-  };
-
-  render() {
-    const { order, orderBy } = this.props;
-
-    return (
-      <TableHead>
-        <TableRow>
-          {columnData.map(column => {
-            return (
-              <TableCell
-                style={column.style}
-                key={column.id}
-                numeric={column.numeric}
-                padding={column.disablePadding ? 'none' : 'default'}
-                sortDirection={orderBy === column.id ? order : false}
-              >
-                <Tooltip
-                  title="Sort"
-                  placement={column.numeric ? 'bottom-end' : 'bottom-start'}
-                  enterDelay={300}
-                >
-                  <TableSortLabel
-                    active={orderBy === column.id}
-                    direction={order}
-                    onClick={this.createSortHandler(column.id)}
-                  >
-                    <strong>{column.label}</strong>
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-            );
-          }, this)}
-        </TableRow>
-      </TableHead>
-    );
-  }
-}
-
 class PortfolioTable extends React.Component {
   constructor(props) {
     super(props);
@@ -74,17 +31,12 @@ class PortfolioTable extends React.Component {
     this.state = {
       order: 'desc',
       orderBy: 'holdingsValue',
-      holdings: [],
       page: 0,
       rowsPerPage: 100,
-      loading: true,
     };
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      this.setState({holdings: this.props.data, loading: false});
-    }, 1500)
   }
 
   handleRequestSort = (event, property) => {
@@ -107,15 +59,25 @@ class PortfolioTable extends React.Component {
   };
 
   render() {
-      // To add commas to big numbers
+    let table = <Spinner />
+
     const numberWithCommas = (x, type) => {
       return type === 'noDecimals'
       ?  x.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
       : x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     }
+
     const { order, orderBy, rowsPerPage, page } = this.state;
-      let table = (
-        this.state.holdings
+
+    let tableRows = undefined;
+    var arr = [];
+    for (var key in this.props.data) {
+      arr.push(this.props.data[key]);
+    }
+
+    if (!this.props.loading) {
+      tableRows = (
+        this.props.data
           .sort(getSorting(order, orderBy))
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((n, index) => {
@@ -126,7 +88,7 @@ class PortfolioTable extends React.Component {
                 key={index}
               >
                 <TableCell><Link to={"/cryptocurrency/" + n.coin} className="Link"><strong>{n.coin}</strong></Link></TableCell>
-                <TableCell>${numberWithCommas(n.price)}</TableCell>
+                <TableCell>${n.price}</TableCell>
                 <TableCell>${numberWithCommas(n.holdingsValue)}</TableCell>
                 <TableCell>{n.amount}</TableCell>
                 <TableCell>${numberWithCommas(n.market_cap, 'noDecimals')}</TableCell>
@@ -136,7 +98,7 @@ class PortfolioTable extends React.Component {
             );
           })
       )
-
+  
       table = (
         <div>
         <p><strong>Your current holdings</strong></p> 
@@ -146,15 +108,17 @@ class PortfolioTable extends React.Component {
               order={order}
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
-              rowCount={this.state.holdings.length}
+              rowCount={this.props.data.length}
             />
             <TableBody>
-              {table}
+              {tableRows}
             </TableBody>
           </Table>
         </div>
         </div>
-        )
+      )
+    }
+
 
     return (
       <div className="PortfolioTable"> 

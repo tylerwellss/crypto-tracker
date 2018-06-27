@@ -6,3 +6,7 @@ export {
   signOut,
   authSuccess
 } from './auth'
+
+export { 
+  fetchPortfolio,
+} from './portfolio'

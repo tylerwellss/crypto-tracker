@@ -8,7 +8,6 @@ const pieChart = (props) => {
   const chartOptions = {
     responsive: false,
   }
-
   return (
 
     <div className="PieChart">

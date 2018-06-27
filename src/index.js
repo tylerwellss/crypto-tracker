@@ -5,13 +5,15 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
-import authReducer from './store/reducers/auth';
 import { BrowserRouter } from 'react-router-dom';
 import thunk from 'redux-thunk';
+import authReducer from './store/reducers/auth';
+import portfolioReducer from './store/reducers/portfolio';
 
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  portfolio: portfolioReducer
 });
 
 const store = createStore(
