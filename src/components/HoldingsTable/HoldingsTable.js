@@ -5,9 +5,10 @@ import TableCell from '@material-ui/core/TableCell';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
 import './HoldingsTable.css'
-import axios from 'axios';
 import Icon from '@material-ui/core/Icon';
 import HoldingsTableHead from './HoldingsTableHead/HoldingsTableHead';
+import { connect } from 'react-redux';
+import * as actions from '../../store/actions/index';
 
 const getSorting = (order, orderBy) => {
   return order === 'desc'
@@ -22,30 +23,10 @@ class HoldingsTable extends React.Component {
     this.state = {
       order: 'desc',
       orderBy: 'amount',
-      holdings: [],
       page: 0,
       rowsPerPage: 100,
-      loading: false,
     };
   }
-
-  componentDidMount() {
-    this.setState({loading: true})
-    // TODO: Use Redux
-    axios.get('https://track-my-crypto.firebaseio.com/portfolios/' + localStorage.getItem('userId') + '/holdings.json')
-      .then(response => {
-        let fetchedHoldings = [];
-        for (let key in response.data) {
-          fetchedHoldings.push({
-            id: key,
-            ...response.data[key],
-        })};
-        this.setState({holdings: fetchedHoldings, loading: false})
-      })
-      .catch(error => {
-        this.setState({loading: false})
-      })
-    }
 
   handleRequestSort = (event, property) => {
     const orderBy = property;
@@ -67,9 +48,8 @@ class HoldingsTable extends React.Component {
   };
 
   handleDelete = (idToDelete) => {
-    this.setState({loading: true})
-    axios.delete('https://track-my-crypto.firebaseio.com/portfolios/' + localStorage.getItem('userId') + '/holdings/' + idToDelete + '.json');
-    this.setState({loading: false})
+    this.props.onDelete(localStorage.getItem('userId'), idToDelete);
+    this.props.onFetchPortfolio(localStorage.getItem('userId'));
   }
 
   render() {
@@ -91,7 +71,7 @@ class HoldingsTable extends React.Component {
       )
     } else {
       table = (
-        this.state.holdings
+        this.props.holdings
           .sort(getSorting(order, orderBy))
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((n, index) => {
@@ -119,7 +99,7 @@ class HoldingsTable extends React.Component {
               order={order}
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
-              rowCount={this.state.holdings.length}
+              rowCount={this.props.holdings.length}
             />
             <TableBody>
               {table}
@@ -128,7 +108,7 @@ class HoldingsTable extends React.Component {
         </div>
         <TablePagination
           component="div"
-          count={this.state.holdings.length}
+          count={this.props.holdings.length}
           rowsPerPage={rowsPerPage}
           page={page}
           backIconButtonProps={{
@@ -145,4 +125,18 @@ class HoldingsTable extends React.Component {
   }
 }
 
-export default HoldingsTable;
+const mapStateToProps = state => {
+  return {
+    holdings: state.portfolio.holdings,
+    loading: state.portfolio.loading,
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onDelete: (userId, coinId) => dispatch(actions.deleteCoin(userId, coinId)),
+    onFetchPortfolio: (userId) => dispatch(actions.fetchPortfolio(userId))
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(HoldingsTable);

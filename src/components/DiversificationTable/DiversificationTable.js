@@ -75,12 +75,6 @@ class DiversificationTable extends React.Component {
     };
   }
 
-  componentDidMount() {
-    setTimeout(() => {
-      this.setState({holdings: this.props.data, loading: false});
-    }, 1500)
-  }
-
   handleRequestSort = (event, property) => {
     const orderBy = property;
     let order = 'desc';
@@ -109,7 +103,7 @@ class DiversificationTable extends React.Component {
     }
     const { order, orderBy, rowsPerPage, page } = this.state;
       let table = (
-        this.state.holdings
+        this.props.data
           .sort(getSorting(order, orderBy))
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((n, index) => {
@@ -120,7 +114,7 @@ class DiversificationTable extends React.Component {
                 key={index}
               >
                 <TableCell>{n.coin}</TableCell>
-                <TableCell>${numberWithCommas(n.price)}</TableCell>
+                <TableCell>{((n.holdingsValue / this.props.portfolioValue) * 100).toFixed(2)}%</TableCell>
               </TableRow>
             );
           })
@@ -134,7 +128,7 @@ class DiversificationTable extends React.Component {
               order={order}
               orderBy={orderBy}
               onRequestSort={this.handleRequestSort}
-              rowCount={this.state.holdings.length}
+              rowCount={this.props.data.length}
             />
             <TableBody>
               {table}

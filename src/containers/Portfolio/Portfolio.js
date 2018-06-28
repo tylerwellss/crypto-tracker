@@ -25,17 +25,19 @@ class Portfolio extends Component {
     }
 
     if (!this.props.loading) {
+      console.log(this.props)
+
       portfolio =  (
         <div className="Portfolio">
-          {/* <h1>Value: ${numberWithCommas(this.state.portfolioValue)}<span style={{'fontSize':'12px', 'paddingLeft':'10px'}}>( + 6.9% / $1,337 )</span></h1> */}
+          <h1>Value: ${numberWithCommas(this.props.portfolioValue)}</h1>
           <Link to={routes.EDIT_PORTFOLIO} style={{'color':'#0074D9'}}><strong>Edit your holdings</strong></Link>
           <PortfolioTable data={this.props.holdings} loading={this.props.loading}/>
           <div className="FlexRow" style={{'marginTop':'24px'}}>
             <div className="FlexColumn">
-              {/* <PieChart data={this.props.holdings}/> */}
+              <PieChart data={this.props.holdings}/>
             </div>
             <div className="FlexColumn">
-              {/* <DiversificationTable data={this.props.holdings} /> */}
+              <DiversificationTable data={this.props.holdings} portfolioValue={this.props.portfolioValue}/>
             </div>
           </div>
         </div>
@@ -53,7 +55,8 @@ class Portfolio extends Component {
 const mapStateToProps = state => {
   return {
     holdings: state.portfolio.holdings,
-    loading: state.portfolio.loading
+    loading: state.portfolio.loading,
+    portfolioValue: state.portfolio.portfolioValue
   }
 }
 

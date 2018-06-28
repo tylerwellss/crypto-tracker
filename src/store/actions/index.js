@@ -9,4 +9,6 @@ export {
 
 export { 
   fetchPortfolio,
+  addCoin,
+  deleteCoin
 } from './portfolio'
