@@ -108,7 +108,12 @@ class LineChart extends Component {
     };
     let chart = undefined;
     if (!this.state.loading) {
-      chart = <Linechart data={data} options={chartOptions} width="900" height="350"/>
+      chart = (
+      <div>
+        <Linechart data={data} options={chartOptions} width="900" height="350"/>
+        <p style={{'textAlign':'center'}}>Data provided by <a href="http://coincap.io">CoinCap.io</a></p>
+      </div>
+      )
     } else {
       chart = <div style={{'textAlign':'center'}}><Spinner /></div>
     }

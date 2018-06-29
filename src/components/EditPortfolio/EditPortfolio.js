@@ -27,7 +27,6 @@ class EditPortfolio extends Component {
   }
  
   render() {
-    console.log('render', this.props.loading)
     let editPortfolio = (
       <div className="EditPortfolio FlexRow" style={{'justifyContent':'center'}}>
         <Spinner />
