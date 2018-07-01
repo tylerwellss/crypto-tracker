@@ -14,7 +14,7 @@ class Cryptocurrency extends Component {
   };
 
   componentDidMount() {
-    axios.get('http://coincap.io/page/' + this.props.match.params.id.toUpperCase())
+    axios.get('https://coincap.io/page/' + this.props.match.params.id.toUpperCase())
       .then(response => {
         this.setState({coinData: response.data})
       })

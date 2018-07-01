@@ -36,7 +36,7 @@ export const fetchPortfolio = (userId) => {
       })};
       let portfolioValue = 0;
       for (let i = 0; i < fetchedHoldings.length; i++) {
-        axios.get('http://coincap.io/page/' + fetchedHoldings[i].coin)
+        axios.get('https://coincap.io/page/' + fetchedHoldings[i].coin)
           .then(response => {
             fetchedHoldings[i].price = response.data.price;
             fetchedHoldings[i].cap24hrChange = response.data.cap24hrChange

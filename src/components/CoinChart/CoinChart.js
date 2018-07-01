@@ -21,7 +21,7 @@ class LineChart extends Component {
 
   updateChartData = (timespan, limiter, dateSlice) => {
     this.setState({loading: true})
-    axios.get('http://coincap.io/history/' + timespan + '/' + this.props.coinData.id) // timespan: 1d, 7d, 30d, 90d, 180d, 365d
+    axios.get('https://coincap.io/history/' + timespan + '/' + this.props.coinData.id) // timespan: 1d, 7d, 30d, 90d, 180d, 365d
       .then(response => {
         this.setState({graphData: response.data.price, loading:false, limiter: limiter, dateSlice: dateSlice})
         })
@@ -111,7 +111,7 @@ class LineChart extends Component {
       chart = (
       <div>
         <Linechart data={data} options={chartOptions} width="900" height="350"/>
-        <p style={{'textAlign':'center'}}>Data provided by <a href="http://coincap.io">CoinCap.io</a></p>
+        <p style={{'textAlign':'center'}}>Data provided by <a href="https://coincap.io">CoinCap.io</a></p>
       </div>
       )
     } else {

@@ -11,7 +11,7 @@ const coinBrief = (props) => {
   return (
     <div className="CoinBrief FlexRow">
       <div className="FlexColumn FlexAlignCenter CoinImageContainer">
-        <img src="http://via.placeholder.com/75x75" alt="CoinImage" className="CoinImage"/>
+        <img src="https://via.placeholder.com/75x75" alt="CoinImage" className="CoinImage"/>
       </div>
       <div className="FlexColumn FlexVertCenter">
         <p style={{'color':'gray','fontSize':'16px'}}>({props.coinData.id})</p>
