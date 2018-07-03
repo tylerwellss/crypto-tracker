@@ -90,14 +90,14 @@ class Landing extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('http://coincap.io/front')
+    axios.get('https://coincap.io/front')
       .then(response => {
         for (let i = 0; i < response.data.length; i++) {
           response.data[i].rank = i + 1;
         }
         this.setState({data: response.data, origData: response.data})
       })
-    axios.get('http://coincap.io/global')
+    axios.get('https://coincap.io/global')
       .then(response => {
         this.setState({globalData: response.data});
       })
@@ -233,7 +233,7 @@ class Landing extends React.Component {
           onChangeRowsPerPage={this.handleChangeRowsPerPage}
         />
         {spinner}
-        <p>Data provided by <a href="http://coincap.io">CoinCap.io</a></p>
+        <p>Data provided by <a href="https://coincap.io">CoinCap.io</a></p>
       </div>
     );
   }
