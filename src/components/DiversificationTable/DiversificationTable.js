@@ -95,12 +95,6 @@ class DiversificationTable extends React.Component {
   };
 
   render() {
-      // To add commas to big numbers
-    const numberWithCommas = (x, type) => {
-      return type === 'noDecimals'
-      ?  x.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-      : x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    }
     const { order, orderBy, rowsPerPage, page } = this.state;
       let table = (
         this.props.data

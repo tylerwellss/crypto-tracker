@@ -14,16 +14,6 @@ const getSorting = (order, orderBy) => {
     : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
 }
 
-const columnData = [
-  { id: 'coin', numeric: false, disablePadding: false, label: 'Coin'},
-  { id: 'price', numeric: false, disablePadding: false, label: 'Price' },
-  { id: 'holdingsValue', numeric: false, disablePadding: false, label: 'Holdings Value' },
-  { id: 'amount', numeric: false, disablePadding: false, label: 'Amount Held' },
-  { id: 'market_cap', numeric: false, disablePadding: false, label: 'Market Cap' },
-  { id: 'volume', numeric: false, disablePadding: false, label: '24h Volume' },
-  { id: 'cap24hrChange', numeric: false, disablePadding: false, label: '24h Change' },
-];
-
 class PortfolioTable extends React.Component {
   constructor(props) {
     super(props);

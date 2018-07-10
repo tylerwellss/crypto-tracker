@@ -91,7 +91,7 @@ const reducer = (state = INITIAL_STATE, action) => {
     case actionTypes.DELETE_COIN_SUCCESS: return deleteCoinSuccess(state, action);
     case actionTypes.DELETE_COIN_FAIL: return deleteCoinFail(state, action);
     default: return state;
-  };
+  }
 };
 
 export default reducer;

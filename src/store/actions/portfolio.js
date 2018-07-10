@@ -46,7 +46,7 @@ export const fetchPortfolio = (userId) => {
             fetchedHoldings[i].value = (fetchedHoldings[i].holdingsValue).toFixed(2)
             portfolioValue = portfolioValue + fetchedHoldings[i].holdingsValue;
         })
-        if (i == fetchedHoldings.length - 1) {
+        if (i === fetchedHoldings.length - 1) {
           setTimeout(() => {
             dispatch(fetchPortfolioSuccess(fetchedHoldings, portfolioValue))
           }, 3000)
