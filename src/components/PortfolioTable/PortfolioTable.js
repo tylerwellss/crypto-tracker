@@ -71,6 +71,12 @@ class PortfolioTable extends React.Component {
           .sort(getSorting(order, orderBy))
           .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
           .map((n, index) => {
+            let textColor = undefined
+            if (n.cap24hrChange < 0) {
+              textColor = 'red'
+            } else {
+              textColor = 'green'
+            }
             return (
               <TableRow
                 hover
@@ -83,7 +89,7 @@ class PortfolioTable extends React.Component {
                 <TableCell>{n.amount}</TableCell>
                 <TableCell>${numberWithCommas(n.market_cap, 'noDecimals')}</TableCell>
                 <TableCell>${numberWithCommas(n.volume, 'noDecimals')}</TableCell>
-                <TableCell>{n.cap24hrChange}%</TableCell>
+                <TableCell style={{'color':textColor, 'fontWeight':'bold'}} numeric>{n.cap24hrChange}%</TableCell>
               </TableRow>
             );
           })
